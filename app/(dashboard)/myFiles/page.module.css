@@ -1,0 +1,128 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  /* background: #fff; */
+
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  padding: 28px;
+    background: #fff;
+
+  .top {
+    display: flex;
+    justify-content: space-between;
+
+    .custom-upload {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      .custom-button {
+        width: 112px;
+        height: 36px;
+        border-radius: 18px;
+        border: 1px solid #328B99;
+        background-color: #fff;
+        color: #328B99;
+        font-size: 14px;
+        transition: all 0.3s;
+
+        &:hover {
+          background-color: #f0f8ff;
+          border-color: #1890ff;
+        }
+      }
+    }
+
+    .ant-upload {
+      display: block;
+      width: 112px !important;
+      height: 36px !important;
+    }
+
+    .ant-btn {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .bottom {
+    margin-top: 32px;
+
+    ul {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        margin: 20px 0;
+        padding: 13px 11px 9px 13px;
+        width: 358px;
+        height: 112px;
+        background: rgba(231, 245, 248, 0.22);
+        border-radius: 10px;
+        border: 1px solid #D8E0E2;
+
+        .fileTop {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          .text {
+            font-size: 14px;
+            color: #333;
+          }
+        }
+
+        .line {
+          margin-top: 10px;
+          width: 332px;
+          height: 2px;
+          background: #D8E0E2;
+        }
+
+        .fileBottom {
+          margin-left: 6px;
+          margin-top: 8px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .time {
+            font-size: 14px;
+            color: #999;
+          }
+
+          .icon {
+            display: flex;
+            gap: 16px;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* 修复 antd Modal 显示问题 */
+:global(.ant-modal-mask) {
+  z-index: 9999 !important;
+}
+
+:global(.ant-modal-wrap) {
+  z-index: 10000 !important;
+}
+
+:global(.ant-modal) {
+  z-index: 10001 !important;
+}
+
+/* antd Upload 按钮样式覆写 */
+:global(.custom-upload .ant-upload) {
+  display: block;
+  width: 112px !important;
+  height: 36px !important;
+}
