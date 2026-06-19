@@ -24,10 +24,10 @@ export default function MyFilesPage() {
   const fetchFileList = async (page = 1) => {
     setLoading(true)
     try {
-      const data = await request<{ records: FileItem[]; total: number }>(
+      const data = await request<{ data: FileItem[]; total: number }>(
         `/api/file?page=${page}&size=${pageSize}`
       )
-      setFileList(data.records || [])
+      setFileList(data.data || [])
       setTotal(data.total || 0)
     } catch {
       message.error('获取文件列表失败')
@@ -40,24 +40,58 @@ export default function MyFilesPage() {
     fetchFileList(currentPage)
   }, [currentPage])
 
-  // 上传
-  const uploadProps = {
-    name: 'file',
-    action: '/api/file/upload',
+  // 上传文件 API
+  const uploadFileAPI = async (file: File) => {
+    const formData = new FormData()
+    formData.append('files', file)
+    const token = localStorage.getItem('token')
+    const res = await fetch('/api/file', {
+      method: 'POST',
+      headers: token ? { token } : {},
+      body: formData,
+    })
+    const json = await res.json()
+    if (json.code !== 1) {
+      throw new Error(json.msg || '上传失败')
+    }
+  }
+
+  const customRequest = async (options: any) => {
+    const { file, onSuccess, onError } = options
+    try {
+      await uploadFileAPI(file)
+      onSuccess?.('上传成功', file)
+    } catch (error) {
+      console.error('文件上传失败:', error)
+      onError?.(error)
+    }
+  }
+
+  const uploadProps: any = {
+    name: 'files',
+    customRequest,
     showUploadList: false,
+    beforeUpload: (file: File) => {
+      const isPDF = file.type === 'application/pdf'
+      if (!isPDF) {
+        message.error('只能上传 PDF 格式的文件!')
+        return false
+      }
+      return true
+    },
     onChange(info: any) {
       if (info.file.status === 'done') {
-        message.success('上传成功')
+        message.success(`${info.file.name} 上传成功`)
         fetchFileList(currentPage)
       } else if (info.file.status === 'error') {
-        message.error('上传失败')
+        message.error(`${info.file.name} 上传失败`)
       }
     },
   }
 
   // 预览文件
-  const handleFileSee = (uuidName: string) => {
-    window.open(`/file/preview/${uuidName}`, '_blank')
+  const handleFileSee = (fileUUID: string) => {
+    window.open(`/api/file/${fileUUID}`, '_blank')
   }
 
   // 删除文件
@@ -78,6 +112,7 @@ export default function MyFilesPage() {
 
   return (
     <div className={styles.container}>
+      <div className={styles.title}>我的文件</div>
       <div className={styles.top}>
         <Upload {...uploadProps} className={styles.customUpload}>
           <Button className={styles.customButton}>上传文件</Button>

@@ -10,7 +10,7 @@ interface Props {
   color?: string
   profix?: string
   className?: string
-  onClick?: React.MouseEventHandler<SVGSVGElement>
+  onClick?: React.MouseEventHandler<HTMLDivElement>
   style?: React.CSSProperties
 }
 
@@ -21,6 +21,7 @@ export default function SvgIcon({
   height,
   color,
   className,
+  onClick,
   style,
 }: Props) {
   const finalWidth = width ?? size ?? '36px'
@@ -51,6 +52,7 @@ export default function SvgIcon({
         height: finalHeight,
         ...style,
       }}
+      onClick={onClick}
       dangerouslySetInnerHTML={{ __html: svgContent }}
     />
   )
