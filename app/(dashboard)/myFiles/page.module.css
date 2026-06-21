@@ -35,7 +35,8 @@
 
         &:hover {
           background-color: #f0f8ff;
-          border-color: #1890ff;
+          /* border-color: #1890ff; */
+          border-color:var(--primary);
         }
       }
     }

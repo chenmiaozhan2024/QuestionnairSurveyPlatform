@@ -28,7 +28,7 @@ export async function request<T = unknown>(
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...(token && { Authorization: `Bearer ${token}` }),
+    ...(token && { token }),
     ...(options.headers as Record<string, string>),
   }
 

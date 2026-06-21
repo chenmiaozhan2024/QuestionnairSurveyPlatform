@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Upload, Button, Spin, Pagination, message } from 'antd'
+import { Upload, Button, Spin, Pagination, message,Popconfirm } from 'antd'
 import SvgIcon from '@/components/SvgIcon'
 import { request } from '@/lib/request'
 import styles from './page.module.css'
@@ -61,6 +61,7 @@ export default function MyFilesPage() {
     try {
       await uploadFileAPI(file)
       onSuccess?.('上传成功', file)
+      fetchFileList()
     } catch (error) {
       console.error('文件上传失败:', error)
       onError?.(error)
@@ -97,11 +98,14 @@ export default function MyFilesPage() {
   // 删除文件
   const handleDeleteFile = async (id: number) => {
     try {
-      await request(`/api/file/delete/${id}`, { method: 'DELETE' })
+      await request(`/api/file?id=${id}`, { method: 'DELETE' })
+     
       message.success('删除成功')
       fetchFileList(currentPage)
     } catch {
       message.error('删除失败')
+    } finally {
+       console.log(id)
     }
   }
 
@@ -139,12 +143,17 @@ export default function MyFilesPage() {
                       height="30"
                       onClick={() => handleFileSee(item.fileUUIDName)}
                     />
-                    <SvgIcon
-                      name="bin"
-                      width="30"
-                      height="30"
-                      onClick={() => handleDeleteFile(item.id)}
-                    />
+                    <Popconfirm
+                      title={`确定要删除${item.fileTureName}文件么？`}
+                      onConfirm={() => handleDeleteFile(item.id)}
+                      okText="确定"
+                      cancelText="取消"
+                    >
+                      <span style={{ cursor: 'pointer' }}>
+                        <SvgIcon name="bin" width="30" height="30" />
+                      </span>
+                    </Popconfirm>
+                   
                   </div>
                 </div>
               </li>
