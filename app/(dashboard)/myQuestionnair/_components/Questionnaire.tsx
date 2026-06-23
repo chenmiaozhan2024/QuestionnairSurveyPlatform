@@ -92,7 +92,7 @@ export default function Questionnaire({ choice, type = 'normal' }: Props) {
   // 删除问卷
   const handleDelete = async (id: string) => {
     try {
-      await request(`/api/questionnaire?id=${id}`, { method: 'DELETE' })
+      await request(`/api/questionnaire/status?id=${id}&newStatus=2`, { method: 'PUT' })
       message.success('删除成功')
       fetchList(currentPage)
     } catch {
@@ -103,7 +103,7 @@ export default function Questionnaire({ choice, type = 'normal' }: Props) {
   // 恢复问卷
   const handRecover = async (id: string) => {
     try {
-      await request(`/api/questionnaire/recover?id=${id}`)
+      await request(`/api/questionnaire/status?id=${id}&newStatus=1`, { method: 'PUT' })
       message.success('恢复成功')
       fetchList(currentPage)
     } catch {
@@ -247,6 +247,7 @@ export default function Questionnaire({ choice, type = 'normal' }: Props) {
           pageSize={pageSize}
           onChange={(page) => setCurrentPage(page)}
           showSizeChanger={false}
+        showTotal={(total) => `共 ${total} 条`}
         />
       )}
 
