@@ -1,0 +1,25 @@
+.container {
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px;
+  width: 100%;
+  height: 100%;
+
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .left {
+      font-size: 28px;
+      color: #505050;
+    }
+
+    .right {
+    }
+  }
+
+  .bottom {
+    margin-top: 24px;
+  }
+}

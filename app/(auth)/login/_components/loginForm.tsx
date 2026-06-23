@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Input, message } from 'antd'
 import { useRouter } from 'next/navigation'
-import styles from '../login.module.css'
+import styles from './loginForm.module.css'
 import SvgIcon from '@/components/SvgIcon'
 import { ApiResponse, request } from '@/lib/request'
 
@@ -66,15 +66,16 @@ export default function LoginForm() {
             value={loginForm.username}
             onChange={handleInputChange}
             name="username"
-            className="login-account-input"
+            className={styles.loginAccountInput}
           />
         </div>
-        <div className={`login-password-wrapper ${styles.passwordWrapper}`}>
+        <div className={`${styles.passwordWrapper}`}>
           <Input.Password
             placeholder="请输入密码"
             value={loginForm.password}
             onChange={handleInputChange}
             name="password"
+            className={styles.loginPasswordInput}
           />
         </div>
         <div className={styles.forgetPassword}>忘记密码？</div>

@@ -84,6 +84,9 @@
   }
 
   .bottom {
-    margin-top: 24px;
+    /* margin-top: 24px; */
   }
+  /* .css-var-root.ant-spin {
+    margin-top: 24px;
+  } */
 }
