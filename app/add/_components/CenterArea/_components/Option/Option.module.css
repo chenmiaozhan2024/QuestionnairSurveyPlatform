@@ -1,0 +1,87 @@
+.option {
+  width: 90%;
+  height: 37px;
+  margin: 10px auto;
+  position: relative;
+  border-radius: 4px;
+
+  .optionSpan {
+    width: 14px;
+    height: 14px;
+    position: absolute;
+    z-index: 2;
+    top: 8px;
+    left: 12px;
+    box-sizing: border-box;
+    border-radius: 100%;
+    border: 2px solid #cbd5de;
+
+    &.checkbox {
+      border-radius: 50%;
+    }
+  }
+
+  input {
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    width: 95%;
+    height: 30px;
+    padding: 0 30px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    background-color: transparent;
+    font-size: 14px;
+
+    &:hover ~ .styles.border {
+      border: 1px dashed #448cff;
+      background-color: #f1f5fc;
+    }
+    &:focus ~ .styles.border {
+      border: 1px solid #448cff;
+      background-color: #e9f1ff;
+    }
+  }
+
+  .del {
+    position: absolute;
+    z-index: 3;
+    width: 20px;
+    height: 20px;
+    top: 5px;
+    right: 4px;
+    cursor: pointer;
+
+    &:hover {
+      fill: #448cff;
+    }
+    &:hover ~ .styles.border {
+      border: 1px dashed #448cff;
+    }
+  }
+
+  .border {
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    width: 95%;
+    height: 30px;
+    padding-left: 25px;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    border-radius: 2px;
+  }
+}
+
+/* 添加 flex-center 和 transition 类的样式 */
+.flexCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.transition {
+  transition: all 0.3s ease;
+}

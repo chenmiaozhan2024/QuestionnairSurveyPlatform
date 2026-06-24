@@ -5,6 +5,7 @@ import { Upload, Button, Spin, Pagination, message,Popconfirm } from 'antd'
 import SvgIcon from '@/components/SvgIcon'
 import { request } from '@/lib/request'
 import styles from './page.module.css'
+import { reqDeleteFile, reqFileList } from '@/services/file/file'
 
 interface FileItem {
   id: number
@@ -24,11 +25,13 @@ export default function MyFilesPage() {
   const fetchFileList = async (page = 1) => {
     setLoading(true)
     try {
-      const data = await request<{ data: FileItem[]; total: number }>(
-        `/api/file?page=${page}&size=${pageSize}`
-      )
+      // const data = await request<{ data: FileItem[]; total: number }>(
+      //   `/api/file?page=${page}&size=${pageSize}`
+      // )
+      const data = await reqFileList(page, pageSize)
       setFileList(data.data || [])
       setTotal(data.total || 0)
+       message.success('获取文件列表成功')
     } catch {
       message.error('获取文件列表失败')
     } finally {
@@ -98,8 +101,8 @@ export default function MyFilesPage() {
   // 删除文件
   const handleDeleteFile = async (id: number) => {
     try {
-      await request(`/api/file?id=${id}`, { method: 'DELETE' })
-     
+      // await request(`/api/file?id=${id}`, { method: 'DELETE' })
+      await reqDeleteFile(id)
       message.success('删除成功')
       fetchFileList(currentPage)
     } catch {

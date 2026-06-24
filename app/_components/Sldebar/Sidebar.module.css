@@ -21,8 +21,9 @@
 
   .leftUl {
     padding-left: 0;
-
+    /* background:red; */
     li {
+   
       list-style: none;
       display: flex;
       width: 212px;
@@ -36,6 +37,7 @@
       }
 
       .link {
+           cursor: default;
         width: 100%;
         height: 100%;
         display: flex;

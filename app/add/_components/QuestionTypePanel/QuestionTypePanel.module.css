@@ -1,0 +1,188 @@
+.questionTypePanel {
+  /* position: fixed;
+  left: 21px;
+  top: 121px; */
+  margin-left: 21px;
+  /* width: 234px; */
+  height: 770px;
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 18px 24px;
+
+  .left {
+    .EditTop {
+      width: 100%;
+
+      .title {
+        width: 100px;
+        height: 24px;
+        font-weight: normal;
+        font-size: 19px;
+        color: #505050;
+        line-height: 24px;
+        text-align: left;
+        font-style: normal;
+        text-transform: none;
+        margin-bottom: 13px;
+      }
+
+      .upAddAndDown {
+        width: 182px;
+        height: 72px;
+        display: flex;
+
+        .upAddAndDownLeft {
+          width: 2px;
+          height: 72px;
+          background: rgba(0, 0, 0, 0.16);
+
+          .text {
+            opacity: 0;
+          }
+        }
+
+        .upAddAndDownRight {
+          display: flex;
+
+          ul {
+            li {
+              cursor: default;
+              margin-top: 15px;
+              display: flex;
+              justify-content: space-between;
+
+              .line {
+                margin-top: 17px;
+                width: 16px;
+                height: 1px;
+                background: rgba(0, 0, 0, 0.16);
+              }
+
+              .text {
+                margin-top: 3px;
+                margin-left: 18px;
+                width: 150px;
+                height: 24px;
+                font-weight: normal;
+                font-size: 15px;
+                color: #848484;
+                line-height: 24px;
+                text-align: left;
+                font-style: normal;
+                text-transform: none;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .EditMiddle {
+      margin-top: 27px;
+
+      .EditMiddleBox {
+        display: flex;
+        margin-bottom: 27px;
+
+        .EditMiddleBoxLeft {
+          width: 1px;
+          height: 238px;
+          background: rgba(0, 0, 0, 0.16);
+          border-radius: 0px;
+
+          .text {
+            display: none;
+          }
+        }
+
+        .EditMiddleBoxRight {
+          width: 100%;
+
+          ul {
+            li {
+              display: flex;
+              align-items: center;
+
+              .LiLeft {
+                display: flex;
+
+                .line {
+                  margin-top: 18px;
+                  width: 16px;
+                  height: 1px;
+                  background: rgba(0, 0, 0, 0.16);
+                  border-radius: 0px;
+                }
+
+                .icon {
+                  padding-top: 7px;
+                  margin-left: 8px;
+                }
+              }
+
+              .LiRight {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+
+                .desc {
+                  margin-left: 6px;
+                  margin-top: 4px;
+                  width: 80px;
+                  height: 24px;
+                  font-weight: normal;
+                  font-size: 16px;
+                  color: #464646;
+                  line-height: 24px;
+                  text-align: left;
+                  font-style: normal;
+                  text-transform: none;
+                }
+
+                .rightIcon {
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .EditBottom {
+      .upAddAndDown {
+        width: 182px;
+        height: 72px;
+        display: flex;
+
+        .upAddAndDownLeft {
+          width: 2px;
+          height: 72px;
+          background: rgba(0, 0, 0, 0.16);
+
+          .text {
+            opacity: 0;
+          }
+        }
+
+        .upAddAndDownRight {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #3F818C;
+          width: 180px;
+          height: 30px;
+          border-radius: 30px;
+          text-align: center;
+          line-height: 30px;
+          color: #fff;
+          cursor: default;
+
+          .documentLink {
+            text-align: center;
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}

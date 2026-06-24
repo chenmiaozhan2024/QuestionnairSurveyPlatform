@@ -1,0 +1,17 @@
+.spanTextContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 18px 50px 14px 50px !important;
+  width: 126px;
+  height: 30px;
+  background: #E7F5F8;
+  border-radius: 2px 2px 2px 2px;
+  text-align: center;
+  font-size: 16px;
+  color: #38818D;
+  line-height: 30px;
+  .xinghao{
+    margin-top: 3px;
+  }
+}

@@ -1,0 +1,109 @@
+.questionPropertyPanel{
+   margin-right: 21px;
+  /* width: 234px; */
+  height: 770px;
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 18px 24px;
+  width: 234px;
+  
+  .right{
+    .subjectTop{
+      display: flex;
+      flex-direction: column;
+      /* align-items: center; */
+      justify-content: space-between;
+      margin-bottom: 12px;
+      .subject{
+        /* width: 75px; */
+        height: 24px;
+        font-family: Alibaba PuHuiTi 2.0, Alibaba PuHuiTi 20;
+        font-weight: normal;
+        font-size: 19px;
+        color: #505050;
+        line-height: 24px;
+        text-align: left;
+        font-style: normal;
+        text-transform: none;
+      }
+      .up{
+        margin-top: 13px;
+        width: 188px;
+        height: 32px;
+        background: var(--button-background-color);
+        border-radius: 999px 999px 999px 999px;
+        text-align: center;
+        line-height: 32px;
+        color: #FFFFFF;
+      }
+      .down{
+        margin-top: 13px;
+        width: 188px;
+        height: 32px;
+        background: var(--button-background-color);
+        border-radius: 999px 999px 999px 999px;
+        text-align: center;
+        line-height: 32px;
+        color: #FFFFFF;
+      }
+      .bixuan{
+        margin-top: 22px;
+     
+          .switch{
+            display: flex;
+            /* justify-content: space-between; */
+         
+            /* width: 44px; */
+            height: 24px;
+            /* background: #E2EFF0; */
+            border-radius: 999px 999px 999px 999px;
+            .requiredText{
+                 margin-left: 16px;
+                 font-size: 16px;
+                color: #464646;
+                line-height: 24px;
+            }
+            .ant-switch {
+              background-color: #E3EFF0 !important;
+              .ant-switch-handle{
+                width: 20px;
+                height: 20px;
+                &::before{
+                  margin-bottom: 5px;
+                }
+              }
+            }
+          }
+      }
+    }
+    .biliangEdit{
+        margin-top: 90px;
+        width: 188px;
+        height: 32px;
+        background: var(--button-background-color);
+        border-radius: 999px 999px 999px 999px;
+        text-align: center;
+        line-height: 32px;
+        color: #FFFFFF;
+    }
+    .biliangEditInput{
+        margin-top: 15px;
+       /* width: 212px; */
+      height: 179px;
+      border-radius: 2px 2px 2px 2px;
+      border: 1px solid rgba(56,129,141,0.36);
+    }
+    .subjectBottom{
+        /* margin: 0 23px; */
+        margin-top: 120px;
+        /* margin: 0 12px; */
+        width: 188px;
+        height: 32px;
+        background:  #C15959;
+        border-radius: 999px 999px 999px 999px;
+        text-align: center;
+        line-height: 32px;
+        color: #fff;
+    }
+  }
+}

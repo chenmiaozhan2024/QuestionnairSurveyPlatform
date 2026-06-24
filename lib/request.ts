@@ -1,7 +1,9 @@
 // lib/request.ts
 
-type RequestOptions = Omit<RequestInit, 'body'> & {
-  body?: Record<string, unknown> | FormData
+type RequestOptions = {
+  method?: string
+  headers?: Record<string, string>
+  body?: object | FormData
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || ''

@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation'
 import styles from './loginForm.module.css'
 import SvgIcon from '@/components/SvgIcon'
 import { ApiResponse, request } from '@/lib/request'
+import { useAuthStore } from '@/stores/authStore'
+import { reqLogin } from '@/services/user/user'
 
 export default function LoginForm() {
   const router = useRouter()
@@ -19,6 +21,7 @@ export default function LoginForm() {
     const { name, value } = e.target
     setLoginForm((prev) => ({ ...prev, [name]: value }))
   }
+  const { setAuth } = useAuthStore()
 
   const handleLogin = async () => {
     if (!loginForm.username?.trim()) {
@@ -32,14 +35,18 @@ export default function LoginForm() {
 
     setLoading(true)
     try {
-      const data = await request<{ msg: string; userRole: string; token: string }>('/api/user/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: loginForm,
-      })
-
+      // const data = await request<{ msg: string; userRole: string; token: string }>('/api/user/login', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: loginForm,
+      // })
+       const data= await reqLogin(loginForm)
       // 保存 token
-      localStorage.setItem('token', data.token)
+        setAuth({
+        token: data.token,
+        userRole: data.userRole,
+        username: loginForm.username, // 或后端返回的用户名
+      })
       message.success(data.msg || '登录成功')
       router.push('/')
     } catch (error: any) {

@@ -1,0 +1,17 @@
+.editBox{
+  margin-bottom: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .edit{
+    width: 80px;
+    height: 24px;
+    font-weight: normal;
+    font-size: 17px;
+    color: #464646;
+    line-height: 24px;
+    text-align: left;
+    font-style: normal;
+    text-transform: none;
+  }
+}

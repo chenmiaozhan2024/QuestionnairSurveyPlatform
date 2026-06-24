@@ -1,0 +1,77 @@
+.textArea {
+  width: 90%;
+  margin: 10px auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+
+  :global(.ant-input) {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: inherit;
+    text-align: inherit;
+    line-height: inherit;
+    border: none;
+    outline: none;
+    box-sizing: content-box;
+    background-color: transparent;
+    resize: none;
+  }
+
+  .hasBorder {
+    &:hover,
+    &:focus-within {
+      :global(.ant-input) {
+        border: 1px dashed #F5F5F5 !important;
+      }
+    }
+
+    &:focus-within {
+      :global(.ant-input) {
+        box-shadow: none !important;
+      }
+    }
+  }
+
+  .noBorder {
+    &:hover,
+    &:focus-within {
+      :global(.ant-input) {
+        border: none !important;
+      }
+    }
+
+    &:focus-within {
+      :global(.ant-input) {
+        box-shadow: none !important;
+      }
+    }
+  }
+
+  .titlePlaceholder {
+    font-size: 30px !important;
+    font-weight: bold;
+    line-height: 46px;
+  }
+
+  /* 自定义边框效果 */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 3px;
+    border: 1px dashed #F5F5F5;
+    transition: all 0.26s ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &:has(.hasBorder:hover)::after,
+  &:has(.hasBorder:focus-within)::after {
+    border: 1px solid #F5F5F5;
+  }
+}

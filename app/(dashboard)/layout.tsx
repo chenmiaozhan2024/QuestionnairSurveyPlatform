@@ -5,19 +5,19 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '../_components/Sldebar/Sidebar'
 import Topbar from '../_components/Topbar/Topbar'
-
+import {useAuthStore} from '@/stores/authStore'
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const [ready, setReady] = useState(false)
+  const token = useAuthStore((s) => s.token)
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
     if (!token) {
       router.push('/login')
       return
     }
     setReady(true)
-  }, [router])
+  }, [token, router])
 
   if (!ready) {
     return null

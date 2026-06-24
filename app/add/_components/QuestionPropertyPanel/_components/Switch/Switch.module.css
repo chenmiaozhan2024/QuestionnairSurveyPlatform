@@ -1,0 +1,15 @@
+.switch {
+  &:global(.ant-switch) {
+    background: #E2EFF0 ;
+  }
+   &:global(.ant-switch:hover) {
+    background: #E2EFF0;
+  }
+
+  &:global(.ant-switch.ant-switch-checked) {
+    background: #E2EFF0 ;
+  }
+   &:global(.ant-switch.ant-switch-checked:hover) {
+    background: #E2EFF0 ;
+  }
+}
