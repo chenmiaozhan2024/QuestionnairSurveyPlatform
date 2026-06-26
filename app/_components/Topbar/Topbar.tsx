@@ -7,7 +7,7 @@ import { useAuthStore} from '@/stores/authStore'
 export default function Topbar() {
   const router = useRouter()
   const role = useAuthStore((e) => e.userRole)
-  console.log(role);
+  // console.log(role);
   
   const handleLogout = () => {
     localStorage.removeItem('token')

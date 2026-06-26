@@ -6,7 +6,7 @@ import SvgIcon from '@/components/SvgIcon'
 import { request } from '@/lib/request'
 import styles from './page.module.css'
 import { reqDeleteFile, reqFileList } from '@/services/file/file'
-
+import {filesItemType} from '@/services/file/type'
 interface FileItem {
   id: number
   fileTureName: string   // 实际文件名
@@ -15,7 +15,7 @@ interface FileItem {
 }
 
 export default function MyFilesPage() {
-  const [fileList, setFileList] = useState<FileItem[]>([])
+  const [fileList, setFileList] = useState<filesItemType[]>([])
   const [loading, setLoading] = useState(false)
   const [total, setTotal] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
@@ -30,8 +30,8 @@ export default function MyFilesPage() {
       // )
       const data = await reqFileList(page, pageSize)
       setFileList(data.data || [])
-      setTotal(data.total || 0)
-       message.success('获取文件列表成功')
+      setTotal(data.totalData || 0)
+      //  message.success('获取文件列表成功')
     } catch {
       message.error('获取文件列表失败')
     } finally {
@@ -148,7 +148,7 @@ export default function MyFilesPage() {
                     />
                     <Popconfirm
                       title={`确定要删除${item.fileTureName}文件么？`}
-                      onConfirm={() => handleDeleteFile(item.id)}
+                      onConfirm={() => handleDeleteFile(Number(item.id))}
                       okText="确定"
                       cancelText="取消"
                     >

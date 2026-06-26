@@ -8,6 +8,7 @@ import SvgIcon from '@/components/SvgIcon'
 import { ApiResponse, request } from '@/lib/request'
 import { useAuthStore } from '@/stores/authStore'
 import { reqLogin } from '@/services/user/user'
+// import { useAuthStore } from '@/stores/authStore'
 
 export default function LoginForm() {
   const router = useRouter()
@@ -16,7 +17,8 @@ export default function LoginForm() {
     password: 'password_admin',
   })
   const [loading, setLoading] = useState(false)
-
+  const userRole = useAuthStore((state) => state.userRole);
+  // console.log('userRole',userRole)
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setLoginForm((prev) => ({ ...prev, [name]: value }))
@@ -46,7 +48,9 @@ export default function LoginForm() {
         token: data.token,
         userRole: data.userRole,
         username: loginForm.username, // 或后端返回的用户名
-      })
+        })
+      // 打印一下 userRole
+     
       message.success(data.msg || '登录成功')
       router.push('/')
     } catch (error: any) {

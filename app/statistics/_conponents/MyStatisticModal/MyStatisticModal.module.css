@@ -1,0 +1,9 @@
+.statisticModal {
+  :global(.ant-modal-header) {
+    text-align: center;
+  }
+
+  :global(.ant-modal-title) {
+    text-align: center;
+  }
+}
