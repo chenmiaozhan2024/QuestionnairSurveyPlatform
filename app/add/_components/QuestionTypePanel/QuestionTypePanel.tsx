@@ -1,8 +1,11 @@
 import SvgIcon from '@/components/SvgIcon';
 import EditBox from './_components/EditBox';
 import styles from './QuestionTypePanel.module.css'
+import { useSurveyStore } from '@/stores/question/questionStore'
 
 export default function QuestionTypePanel() {
+  const { questions } = useSurveyStore()
+  const addQuestion = useSurveyStore((s) => s.addQuestion)
   return (
     <div className={styles.questionTypePanel}>
       <div className={styles.left}>
@@ -50,13 +53,16 @@ export default function QuestionTypePanel() {
                                                 <div className={styles.desc}>段落说明</div>
                                                 <div className={styles.rightIcon}>
                                                     <div className={styles.line}></div>
-                                                    <SvgIcon name="add" width={"24"} height={"24"}   onClick={() => {
+                                                       <SvgIcon name="add" width={"24"} height={"24"} onClick={() => {
                                                         const newQuestion = {
+                                                            order: String((questions.length + 1)),
                                                             type: "QUESTION_TYPE_DESCRIPTION",
                                                             title: "",
-                                                            id: String(Date.now()), // 或者用 (questions.length + 1).toString()
-                                                            // info: "请输入段落说明内容...",
+                                                            info: "",
+                                                            required: false,
+                                                            id: String(Date.now()),
                                                         };
+                                                        addQuestion(newQuestion); // 调用 store action
                                                     }}></SvgIcon>
                                                 </div>
                                             </div>
@@ -74,15 +80,16 @@ export default function QuestionTypePanel() {
                                                 <div className={styles.rightIcon}>
                                                     <SvgIcon name="add" width={"24"} height={"24"}
                                                              onClick={() => {
-                                                                 const newSingleQuestion = {
-                                                                     type: "QUESTION_TYPE_SINGLE",         // ✅ 题目类型：单选题
-                                                                     title: "",                      // ✅ 题目标题，可自定义，比如 "你的性别"
-                                                                     info: "",                // ✅ 题目描述/提示语（可选）
-                                                                     required: true,                      // ✅ 是否必填，可设为 true/false
+                                                                 const newQuestion = {
+                                                                     type: "QUESTION_TYPE_SINGLE",        
+                                                                     title: "",                     
+                                                                     info: "",                
+                                                                     required: true,                      
                                                                      options: [""],
-                                                                     id: String(Date.now()),               // ✅ 唯一 ID，可用时间戳
+                                                                     id: String(Date.now()), 
                                                                 
-                                                                 };
+                                                               };
+                                                                addQuestion(newQuestion);
                                                              }}>
                                                     </SvgIcon>
                                                 </div>
@@ -100,15 +107,15 @@ export default function QuestionTypePanel() {
                                                 <div className={styles.rightIcon}>
                                                     <SvgIcon name="add" width={"24"} height={"24"}
                                                              onClick={() => {
-                                                        const newSingleQuestion = {
-                                                            type: "QUESTION_TYPE_MULTI",         // ✅ 题目类型：多选
-                                                            title: "",                      // ✅ 题目标题，可自定义，比如 "你的性别"
-                                                            info: "",                // ✅ 题目描述/提示语（可选）
-                                                            required: true,                      // ✅ 是否必填，可设为 true/false
+                                                        const newQuestion = {
+                                                            type: "QUESTION_TYPE_MULTI",       
+                                                            title: "",                     
+                                                            info: "",              
+                                                            required: true,                     
                                                             options: [""],
-                                                            id: String(Date.now()),               // ✅ 唯一 ID，可用时间戳
-                                                          
-                                                        };
+                                                            id: String(Date.now()),           
+                                                         };
+                                                      addQuestion(newQuestion);
                                                     }}
                                                     ></SvgIcon>
                                                 </div>
@@ -125,16 +132,16 @@ export default function QuestionTypePanel() {
                                                 <div className={styles.desc}>下拉选项</div>
                                                 <div className={styles.rightIcon}>
                                                     <SvgIcon name="add" width={"24"} height={"24"}   onClick={() => {
-                                                        const newSingleQuestion = {
-                                                            type: "QUESTION_TYPE_SELECT",         // ✅ 题目类型：下拉
-                                                            title: "",                      // ✅ 题目标题，可自定义，比如 "你的性别"
-                                                            info: "",                // ✅ 题目描述/提示语（可选）
-                                                            required: true,                      // ✅ 是否必填，可设为 true/false
+                                                        const newQuestion = {
+                                                            type: "QUESTION_TYPE_SELECT",         
+                                                            title: "",                      
+                                                            info: "",             
+                                                            required: true,                    
                                                             options: [""],
-                                                            id: String(Date.now()),               // ✅ 唯一 ID，可用时间戳
+                                                            id: String(Date.now()),               
                                                   
                                                         };
-                                                      
+                                                      addQuestion(newQuestion);
                                                     }}></SvgIcon>
                                                 </div>
                                             </div>
@@ -151,15 +158,15 @@ export default function QuestionTypePanel() {
                                                 <div className={styles.rightIcon}>
                                                     <SvgIcon name="add" width={"24"} height={"24"}
                                                              onClick={() => {
-                                                        const newSingleQuestion = {
-                                                            type: "QUESTION_TYPE_TEXT",         // ✅ 题目类型：单行文本
-                                                            title: "",                      // ✅ 题目标题，可自定义，比如 "你的性别"
-                                                            info: "",                // ✅ 题目描述/提示语（可选）
-                                                            required: true,                      // ✅ 是否必填，可设为 true/false
-                                                            id: String(Date.now()),               // ✅ 唯一 ID，可用时间戳
+                                                        const newQuestion = {
+                                                            type: "QUESTION_TYPE_TEXT",        
+                                                            title: "",                      
+                                                            info: "",                
+                                                            required: true,                      
+                                                            id: String(Date.now()),           
                                                         
                                                         };
-                                                      
+                                                       addQuestion(newQuestion);
                                                     }}
                                                     ></SvgIcon>
                                                 </div>
@@ -178,14 +185,14 @@ export default function QuestionTypePanel() {
                                                     <SvgIcon name="add" width={"24"} height={"24"}
                                                              onClick={() => {
                                                                  const newSingleQuestion = {
-                                                                     type: "QUESTION_TYPE_TEXTAREA",         // ✅ 题目类型：单行文本
-                                                                     title: "",                      // ✅ 题目标题，可自定义，比如 "你的性别"
-                                                                     info: "",                // ✅ 题目描述/提示语（可选）
-                                                                     required: true,                      // ✅ 是否必填，可设为 true/false
-                                                                     id: String(Date.now()),               // ✅ 唯一 ID，可用时间戳
+                                                                     type: "QUESTION_TYPE_TEXTAREA",        
+                                                                     title: "",                      
+                                                                     info: "",               
+                                                                     required: true,                     
+                                                                     id: String(Date.now()),     
                                                                   
                                                                  };
-                                                      
+                                                                 addQuestion(newSingleQuestion);
                                                              }}
                                                     ></SvgIcon>
                                                 </div>
@@ -205,16 +212,16 @@ export default function QuestionTypePanel() {
                                                     <SvgIcon name="add" width={"24"} height={"24"}
                                                              onClick={() => {
                                                                  const newSingleQuestion = {
-                                                                     type: "QUESTION_TYPE_MATRIX_RADIO",         // ✅ 题目类型：矩阵单选
-                                                                     title: "",                      // ✅ 题目标题，可自定义，比如 "你的性别"
-                                                                     info: "",                // ✅ 题目描述/提示语（可选）
-                                                                     required: true,                      // ✅ 是否必填，可设为 true/false
-                                                                     options: ['', ''],       // ✅ 默认两个空选项（列）
-                                                                     subTitles: ['', ''],    // ✅ 默认两个空题目（行）
+                                                                     type: "QUESTION_TYPE_MATRIX_RADIO",        
+                                                                     title: "",                     
+                                                                     info: "",               
+                                                                     required: true,                   
+                                                                     options: ['', ''],      
+                                                                     subTitles: ['', ''],   
                                                                      id: String(Date.now()),
                                                                    
                                                                  };
-                    
+                                                                   addQuestion(newSingleQuestion);
                                                              }}></SvgIcon>
                                                 </div>
                                             </div>

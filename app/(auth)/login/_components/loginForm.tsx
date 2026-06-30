@@ -5,7 +5,7 @@ import { Input, message } from 'antd'
 import { useRouter } from 'next/navigation'
 import styles from './loginForm.module.css'
 import SvgIcon from '@/components/SvgIcon'
-import { ApiResponse, request } from '@/lib/request'
+import { request } from '@/lib/request'
 import { useAuthStore } from '@/stores/authStore'
 import { reqLogin } from '@/services/user/user'
 // import { useAuthStore } from '@/stores/authStore'
@@ -42,17 +42,22 @@ export default function LoginForm() {
       //   headers: { 'Content-Type': 'application/json' },
       //   body: loginForm,
       // })
-       const data= await reqLogin(loginForm)
-      // 保存 token
+      const result = await reqLogin(loginForm)
+      // console.log(result);
+      
+        if (result.code !== 1) {
+          message.error(result.msg || '登录失败')
+          return
+        }
+        const { accessToken, userRole } = result.data
+        // 保存 token
         setAuth({
-        token: data.token,
-        userRole: data.userRole,
-        username: loginForm.username, // 或后端返回的用户名
+          token: accessToken,
+          userRole,
+          username: loginForm.username,
         })
-      // 打印一下 userRole
-     
-      message.success(data.msg || '登录成功')
-      router.push('/')
+        message.success(result.data.msg || '登录成功')
+        router.push('/')
     } catch (error: any) {
       message.error(error.message || '登录失败，请检查账号密码')
     } finally {

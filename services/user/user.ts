@@ -4,17 +4,22 @@ interface LoginParams {
   username: string
   password: string
 }
-interface LoginResult {
+
+interface LoginData {
   msg: string
   userRole: string
-  token: string
+  accessToken: string
+  refreshToken: string
+}
+
+interface LoginResult {
+  code: number
+  msg: string
+  data: LoginData
 }
 const UserAPI = {
   loginAPi: '/api/user/login',
 }
 
 export const reqLogin = (body: LoginParams) =>
-  request<LoginResult>(UserAPI.loginAPi, {
-    method: 'POST',
-    body,
-  })
+  request.post<LoginResult>(UserAPI.loginAPi, body)

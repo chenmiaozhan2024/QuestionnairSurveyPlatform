@@ -10,6 +10,7 @@ const statisticAPI = {
   deleteQuestionnaireAnswer: '/api/questionnaire/deleteFillIn',
   editQuestionnaireAnswer: '/api/questionnaire/updateFillIn',
 }
+// 获取所有答卷
 export function getAllFinllIn({
   page = 1,
   size = 10,
@@ -28,6 +29,7 @@ export function getAllFinllIn({
     `${statisticAPI.getFillIn}?page=${params.page}&size=${params.size}&id=${params.id}`,
   )
 }
+// 根据id获取答卷详情
 export function getFinllInById(id: string) {
   return request<getFinllInByIdResPon>(`${statisticAPI.getQuestionnair}/${id}`)
 }

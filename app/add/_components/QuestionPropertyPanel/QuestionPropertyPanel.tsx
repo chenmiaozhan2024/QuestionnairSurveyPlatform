@@ -1,5 +1,8 @@
 import Switch from './_components/Switch/Switch';
 import styles from './QuestionPropertyPanel.module.css'
+// interface QuestionPropertyPanelProps{
+//   onQuestionClick:(question:Question)=>void
+// }
 export default function QuestionPropertyPanel() {
   return (
     <div className={styles.questionPropertyPanel}>

@@ -7,12 +7,15 @@ import { useRouter } from 'next/navigation'
 import QuestionTypePanel from './_components/QuestionTypePanel/QuestionTypePanel'
 import QuestionPropertyPanel from './_components/QuestionPropertyPanel/QuestionPropertyPanel'
 import CenterArea from './_components/CenterArea/CenterArea'
+import { useState } from 'react'
+import { SurveyQuestion } from '@/stores/question/type'
 
 export default function Page() {
    const router = useRouter()
    const goBack=()=>{
       router.push('/')
-    }
+  }
+  const [currentSelectedQuestion, setCurrentSelectedQuestion] = useState<SurveyQuestion | null>(null);
   return <div className={styles.container}>
     <div className={styles.addPageTop}>
        <TopBar />
@@ -45,9 +48,9 @@ export default function Page() {
       {/* 左侧区域，添加题型 */}
       <QuestionTypePanel />
       {/* 中间编辑区域 */}
-      <CenterArea />
+      <CenterArea  onQuestionClick={setCurrentSelectedQuestion}/>
       {/* 右侧区域，添加题目属性 */}
-      <QuestionPropertyPanel />
+      <QuestionPropertyPanel/>
     </div>
     
     

@@ -1,0 +1,153 @@
+.matrix-table-wrapper {
+  overflow-x: auto;
+  padding-left: 30px;
+  margin-left: 10px;
+  table {
+    //width: max-content;
+    margin: auto;
+    margin-top: 20px;
+    border-collapse: collapse;
+    word-break: break-all;
+    //background: pink;
+    width: 100%;
+    tr {
+      display: flex;
+      //border-bottom: 1px solid #B7D1D6;
+
+      &:last-of-type {
+        border-bottom: none;
+      }
+    }
+
+    th,
+    td {
+      width: 190px;
+      position: relative;
+      text-align: center;
+      vertical-align: middle;
+      padding: 8px;
+      border-right: 1px solid #B7D1D6; // ✅ 列与列之间的边框
+      border-bottom: 1px solid #B7D1D6; // ✅ 可选：如果你还想每行底部也有边框（通常已经有 tr border-bottom）
+
+      &:last-child {
+        border-right: none; // ✅ 每行最后一列，不需要右边框
+      }
+
+      .del {
+        position: absolute;
+        cursor: pointer;
+        font-size: 16px;
+      }
+    }
+
+    .th-option {
+      padding-bottom: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; // ✅ 改为顶部对齐，支持高度自动撑开
+      padding-top: 8px; // ✅ 添加顶部内边距保持视觉平衡
+      //.del {
+      //  bottom: 0;
+      //  right: 50%;
+      //  transform: translateX(50%);
+      //}
+    }
+
+    .td-title {
+      display: flex;
+      width: 200px;
+      padding-left: 22px;
+
+      .del {
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+      }
+    }
+
+    .td-circle {
+      &::before {
+        content: '';
+        display: block;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 2px solid #B7D1D6;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    textarea.t-input {
+      width: 111px;
+      min-height: 28px;
+      border-radius: 2px 2px 2px 2px;
+      border: 1px solid #B7D1D6;
+      resize: none; // ✅ 禁用拖拽调整大小
+      overflow: hidden; // ✅ 隐藏滚动条
+      line-height: 1.4; // ✅ 设置行高以确保正确的计算
+      padding: 4px 8px; // ✅ 添加内边距
+      box-sizing: border-box; // ✅ 确保 padding 不影响宽度
+      font-size: 14px;
+      word-wrap: break-word; // ✅ 允许单词换行
+      
+      // 自动调整高度的输入框
+      &.t-input-auto-resize {
+        height: auto;
+        min-height: 28px;
+        max-height: none; // ✅ 不限制最大高度
+      }
+      
+      //width: 100%;
+      //border: 1px solid #ccc;
+      //background: transparent;
+      //resize: none;
+      //font-size: 14px;
+      //padding: 4px;
+    }
+  }
+}
+
+.config {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
+  .add-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    //background: white;
+    cursor: pointer;
+    font-size: 14px;
+    background: #F0F0F0;
+
+    //.svg {
+    //  font-size: 16px;
+    //}
+
+    //.text-padding {
+    //  font-size: 14px;
+    //}
+
+    //&.active {
+    //  background-color: #fafafa;
+    //  color: #448cff;
+    //  border-color: #448cff;
+    //}
+  }
+}
+
+// 通用辅助类（模拟 Vue 的 flex-center）
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

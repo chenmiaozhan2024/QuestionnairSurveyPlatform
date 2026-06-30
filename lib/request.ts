@@ -1,62 +1,91 @@
-// lib/request.ts
+import axios, { type AxiosRequestConfig } from 'axios'
 
-type RequestOptions = {
-  method?: string
-  headers?: Record<string, string>
-  body?: object | FormData
-}
+const instance = axios.create({
+  baseURL: process.env.BACKEND_URL,
+  withCredentials: true, // cookie 自动带上
+})
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || ''
+// 包装一层，让 TS 知道拦截器已剥掉 AxiosResponse
+export const request = {
+  get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    return instance.get(url, config) as any
+  },
+  post<T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): Promise<T> {
+    return instance.post(url, data, config) as any
+  },
+  put<T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): Promise<T> {
+    return instance.put(url, data, config) as any
+  },
+  delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    return instance.delete(url, config) as any
+  },
+} as const
 
-/** 后端统一响应结构 */
-export interface ApiResponse<T = unknown> {
-  code: number
-  msg: string
-  data: T
-}
-
-/**
- * 封装的请求函数，自动：
- * - 注入 token
- * - 检查业务 code（非 200 抛错）
- * - 解包 data 返回
- */
-export async function request<T = unknown>(
-  url: string,
-  options: RequestOptions = {},
-): Promise<T> {
-  const token =
-    typeof window !== 'undefined' ? localStorage.getItem('token') : ''
-
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    ...(token && { token }),
-    ...(options.headers as Record<string, string>),
+// 请求拦截器：每次请求带上 accessToken
+instance.interceptors.request.use((config) => {
+  const accessToken = localStorage.getItem('accessToken')
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`
   }
+  return config
+})
 
-  if (options.body instanceof FormData) {
-    delete headers['Content-Type']
-  }
+// 响应拦截器：无感刷新
+let isRefreshing = false
+let pendingRequests: Array<(token: string) => void> = []
 
-  const res = await fetch(`${BASE_URL}${url}`, {
-    ...options,
-    headers,
-    body:
-      options.body instanceof FormData
-        ? options.body
-        : options.body
-          ? JSON.stringify(options.body)
-          : undefined,
-  })
+instance.interceptors.response.use(
+  (res) => res.data, // 直接返回后端数据，去掉 axios 包裹
+  async (err) => {
+    const { config, response } = err
 
-  const json: ApiResponse<T> = await res.json().catch(() => {
-    throw new Error('响应格式错误')
-  })
+    // 不是 401 或 _retry 标记过 → 直接抛出
+    if (response?.status !== 401 || config._retry) {
+      return Promise.reject(err)
+    }
 
-  // 业务层错误（后端 code 不为 1 表示失败）
-  if (json.code !== 1) {
-    throw new Error(json.msg || '请求失败')
-  }
+    // 防止并发刷新
+    if (isRefreshing) {
+      return new Promise((resolve) => {
+        pendingRequests.push((token: string) => {
+          config.headers.Authorization = `Bearer ${token}`
+          resolve(instance(config))
+        })
+      })
+    }
 
-  return json.data
-}
+    config._retry = true
+    isRefreshing = true
+
+    try {
+      const res = await instance.post('/refresh')
+      const newToken = res.data.accessToken
+      localStorage.setItem('accessToken', newToken)
+
+      // 重试积压的请求
+      pendingRequests.forEach((cb) => cb(newToken))
+      pendingRequests = []
+
+      config.headers.Authorization = `Bearer ${newToken}`
+      return instance(config)
+    } catch {
+      // refresh 也失败 → 清空状态，跳登录
+      localStorage.removeItem('accessToken')
+      pendingRequests = []
+      window.location.href = '/login'
+      return Promise.reject(err)
+    } finally {
+      isRefreshing = false
+    }
+  },
+)
+
+// export  request

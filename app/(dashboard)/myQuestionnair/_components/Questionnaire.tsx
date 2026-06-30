@@ -33,7 +33,7 @@ export default function Questionnaire({ choice, type = 'normal' }: Props) {
   const fetchList = async (page = 1) => {
     setLoading(true)
     try {
-      const data = await request<{ data: QuestionnaireItem[]; totalData: number }>(
+      const data = await request.get<{ data: QuestionnaireItem[]; totalData: number }>(
         `/api/questionnaire?page=${page}&size=${pageSize}&choice=${choice}`
       )
       setList(data.data || [])
@@ -60,7 +60,7 @@ export default function Questionnaire({ choice, type = 'normal' }: Props) {
     if (!currentItem) return
     const newStatus = currentItem.status === 0 ? 1 : 0
     try {
-      await request(`/api/questionnaire/status?id=${id}&newStatus=${newStatus}`, { method: 'PUT' })
+      await request.put(`/api/questionnaire/status?id=${id}&newStatus=${newStatus}`)
       setList((prev) =>
         prev.map((item) =>
           item.id === id ? { ...item, status: newStatus } : item
@@ -92,7 +92,7 @@ export default function Questionnaire({ choice, type = 'normal' }: Props) {
   // 删除问卷
   const handleDelete = async (id: string) => {
     try {
-      await request(`/api/questionnaire/status?id=${id}&newStatus=2`, { method: 'PUT' })
+      await request.put(`/api/questionnaire/status?id=${id}&newStatus=2`)
       message.success('删除成功')
       fetchList(currentPage)
     } catch {
@@ -103,7 +103,7 @@ export default function Questionnaire({ choice, type = 'normal' }: Props) {
   // 恢复问卷
   const handRecover = async (id: string) => {
     try {
-      await request(`/api/questionnaire/status?id=${id}&newStatus=1`, { method: 'PUT' })
+      await request.put(`/api/questionnaire/status?id=${id}&newStatus=1`)
       message.success('恢复成功')
       fetchList(currentPage)
     } catch {
