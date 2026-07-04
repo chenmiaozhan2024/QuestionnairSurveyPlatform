@@ -9,7 +9,7 @@ import {useAuthStore} from '@/stores/authStore'
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const [ready, setReady] = useState(false)
-  const token = useAuthStore((s) => s.token)
+  const token = useAuthStore((s) => s.accessToken)
 
   useEffect(() => {
     if (!token) {

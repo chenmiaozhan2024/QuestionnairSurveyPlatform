@@ -5,14 +5,8 @@ import { Upload, Button, Spin, Pagination, message,Popconfirm } from 'antd'
 import SvgIcon from '@/components/SvgIcon'
 import { request } from '@/lib/request'
 import styles from './page.module.css'
-import { reqDeleteFile, reqFileList } from '@/services/file/file'
+import { reqDeleteFile, reqFileList, reqUploadFile } from '@/services/file/file'
 import {filesItemType} from '@/services/file/type'
-interface FileItem {
-  id: number
-  fileTureName: string   // 实际文件名
-  fileUUIDName: string    // 服务器存储的 UUID 文件名
-  date: string
-}
 
 export default function MyFilesPage() {
   const [fileList, setFileList] = useState<filesItemType[]>([])
@@ -25,13 +19,15 @@ export default function MyFilesPage() {
   const fetchFileList = async (page = 1) => {
     setLoading(true)
     try {
-      // const data = await request<{ data: FileItem[]; total: number }>(
-      //   `/api/file?page=${page}&size=${pageSize}`
-      // )
       const data = await reqFileList(page, pageSize)
-      setFileList(data.data || [])
-      setTotal(data.totalData || 0)
-      //  message.success('获取文件列表成功')
+   
+      // console.log(data);
+      
+      setFileList(data.data.data || [])
+      // console.log(data.data.totalData);
+      
+      setTotal(data.data.totalData || 0)
+       message.success('获取文件列表成功')
     } catch {
       message.error('获取文件列表失败')
     } finally {
@@ -45,19 +41,13 @@ export default function MyFilesPage() {
 
   // 上传文件 API
   const uploadFileAPI = async (file: File) => {
-    const formData = new FormData()
-    formData.append('files', file)
-    const token = localStorage.getItem('token')
-    const res = await fetch('/api/file', {
-      method: 'POST',
-      headers: token ? { token } : {},
-      body: formData,
-    })
-    const json = await res.json()
-    if (json.code !== 1) {
-      throw new Error(json.msg || '上传失败')
-    }
+  const formData = new FormData()
+  formData.append('files', file)
+  const res=await reqUploadFile(formData)
+  if (res.code !== 1) {
+    throw new Error(res.msg || '上传失败')
   }
+}
 
   const customRequest = async (options: any) => {
     const { file, onSuccess, onError } = options
@@ -94,14 +84,25 @@ export default function MyFilesPage() {
   }
 
   // 预览文件
-  const handleFileSee = (fileUUID: string) => {
-    window.open(`/api/file/${fileUUID}`, '_blank')
+ const handleFileSee = async (fileUUID: string) => {
+  try {
+    const res = await request.get<{ data: { url: string } }>(`/api/file/${fileUUID}`)
+    const url = res.data.url
+    if (url) {
+      window.open(url, '_blank')
+    } else {
+      message.error('文件地址不存在')
+    }
+  } catch {
+    message.error('预览失败')
   }
+}
 
   // 删除文件
-  const handleDeleteFile = async (id: number) => {
+  const handleDeleteFile = async (id: string) => {
     try {
       // await request(`/api/file?id=${id}`, { method: 'DELETE' })
+      console.log('传给 reqDeleteFile 的 id:', id, typeof id);
       await reqDeleteFile(id)
       message.success('删除成功')
       fetchFileList(currentPage)
@@ -131,7 +132,7 @@ export default function MyFilesPage() {
         <div className={styles.bottom}>
           <ul>
             {fileList.map((item) => (
-              <li key={item.id}>
+              <li key={item._id}>
                 <div className={styles.fileTop}>
                   <SvgIcon name="wenjian" width="30" height="30" />
                   <div className={styles.text}>{item.fileTureName}</div>
@@ -144,11 +145,11 @@ export default function MyFilesPage() {
                       name="eye"
                       width="30"
                       height="30"
-                      onClick={() => handleFileSee(item.fileUUIDName)}
+                      onClick={() => handleFileSee(item.fileUUIDname)}
                     />
                     <Popconfirm
                       title={`确定要删除${item.fileTureName}文件么？`}
-                      onConfirm={() => handleDeleteFile(Number(item.id))}
+                      onConfirm={() => handleDeleteFile(item._id)}
                       okText="确定"
                       cancelText="取消"
                     >

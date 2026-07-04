@@ -52,7 +52,7 @@ export default function LoginForm() {
         const { accessToken, userRole } = result.data
         // 保存 token
         setAuth({
-          token: accessToken,
+          accessToken: accessToken,
           userRole,
           username: loginForm.username,
         })

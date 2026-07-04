@@ -32,6 +32,8 @@ export const request = {
 // 请求拦截器：每次请求带上 accessToken
 instance.interceptors.request.use((config) => {
   const accessToken = localStorage.getItem('accessToken')
+  // console.log('accessToken', accessToken)
+
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`
   }

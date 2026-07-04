@@ -1,10 +1,12 @@
 export interface filesItemType {
-  id: string
+  _id: string
   fileTureName: string
-  fileUUIDName: string
+  fileUUIDname: string
   date: string
 }
 export interface FileListResult {
-  data: filesItemType[]
-  totalData: number
+  data: {
+    data: filesItemType[]
+    totalData: number
+  }
 }
