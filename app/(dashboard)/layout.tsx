@@ -13,6 +13,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     if (!token) {
+      console.log('执行了跳转登录');
+      
       router.push('/login')
       return
     }

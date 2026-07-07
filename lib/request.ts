@@ -68,7 +68,9 @@ instance.interceptors.response.use(
     isRefreshing = true
 
     try {
-      const res = await instance.post('/refresh')
+      const res = await instance.post('/api/refresh')
+      console.log('res', res)
+
       const newToken = res.data.accessToken
       localStorage.setItem('accessToken', newToken)
 

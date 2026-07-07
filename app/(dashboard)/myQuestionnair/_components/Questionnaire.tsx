@@ -5,6 +5,7 @@ import { Spin, Pagination, Popconfirm, Modal, Button, message } from 'antd'
 import SvgIcon from '@/components/SvgIcon'
 import { request } from '@/lib/request'
 import styles from './Questionnaire.module.css'
+import { reqChangeStatus, reqGetQuestionnairList } from '@/services/questionnaire/questionnair'
 
 interface QuestionnaireItem {
   id: string
@@ -33,9 +34,7 @@ export default function Questionnaire({ choice, type = 'normal' }: Props) {
   const fetchList = async (page = 1) => {
     setLoading(true)
     try {
-      const data = await request.get<{ data: QuestionnaireItem[]; totalData: number }>(
-        `/api/questionnaire?page=${page}&size=${pageSize}&choice=${choice}`
-      )
+      const data=await reqGetQuestionnairList(page,pageSize,choice)
       setList(data.data || [])
       setTotal(data.totalData || 0)
     } catch {
@@ -60,7 +59,8 @@ export default function Questionnaire({ choice, type = 'normal' }: Props) {
     if (!currentItem) return
     const newStatus = currentItem.status === 0 ? 1 : 0
     try {
-      await request.put(`/api/questionnaire/status?id=${id}&newStatus=${newStatus}`)
+       await reqChangeStatus(id,newStatus)
+      // await request.put(`/api/questionnaire/status?id=${id}&newStatus=${newStatus}`)
       setList((prev) =>
         prev.map((item) =>
           item.id === id ? { ...item, status: newStatus } : item
