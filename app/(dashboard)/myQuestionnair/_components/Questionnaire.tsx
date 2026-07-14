@@ -1,21 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Spin, Pagination, Popconfirm, Modal, Button, message } from 'antd'
 import SvgIcon from '@/components/SvgIcon'
-import { request } from '@/lib/request'
 import styles from './Questionnaire.module.css'
 import { reqChangeStatus, reqGetQuestionnairList } from '@/services/questionnaire/questionnair'
-
-interface QuestionnaireItem {
-  id: string
-  title: string
-  info: string
-  url: string
-  status: number       // 0: 待收集  1: 已结束
-  createTime: string
-  totalCollected: number
-}
+import { QRCodeSVG } from 'qrcode.react'
+import type {QuestionnaireItem} from '@/services/questionnaire/type'
 
 interface Props {
   choice: string
@@ -29,14 +21,17 @@ export default function Questionnaire({ choice, type = 'normal' }: Props) {
   const [currentPage, setCurrentPage] = useState(1)
   const [qrModalVisible, setQrModalVisible] = useState(false)
   const [currentQrId, setCurrentQrId] = useState<string | null>(null)
+  const router = useRouter()
   const pageSize = 4
 
   const fetchList = async (page = 1) => {
     setLoading(true)
     try {
-      const data=await reqGetQuestionnairList(page,pageSize,choice)
-      setList(data.data || [])
-      setTotal(data.totalData || 0)
+      const data = await reqGetQuestionnairList(page, pageSize, choice)
+      // console.log(data.data);
+      
+      setList(data.data.data || [])
+      setTotal(data.data.totalData || 0)
     } catch {
       message.error('获取问卷列表失败')
     } finally {
@@ -74,7 +69,9 @@ export default function Questionnaire({ choice, type = 'normal' }: Props) {
 
   // 统计
   const handleStatistics = (id: string) => {
-    window.open(`/statistics/${id}`, '_blank')
+    // console.log('id',id);
+    
+    router.push(`/statistics/${id}`)
   }
 
   // 复制链接
@@ -92,7 +89,8 @@ export default function Questionnaire({ choice, type = 'normal' }: Props) {
   // 删除问卷
   const handleDelete = async (id: string) => {
     try {
-      await request.put(`/api/questionnaire/status?id=${id}&newStatus=2`)
+      // await request.put(`/api/questionnaire/status?id=${id}&newStatus=2`)
+      await reqChangeStatus(id,2)
       message.success('删除成功')
       fetchList(currentPage)
     } catch {
@@ -103,7 +101,8 @@ export default function Questionnaire({ choice, type = 'normal' }: Props) {
   // 恢复问卷
   const handRecover = async (id: string) => {
     try {
-      await request.put(`/api/questionnaire/status?id=${id}&newStatus=1`)
+      await reqChangeStatus(id,1)
+      // await request.put(`/api/questionnaire/status?id=${id}&newStatus=1`)
       message.success('恢复成功')
       fetchList(currentPage)
     } catch {
@@ -142,8 +141,8 @@ export default function Questionnaire({ choice, type = 'normal' }: Props) {
     <div className={styles.container}>
       <Spin spinning={loading} description="加载中...">
         <div className={styles.list}>
-          {list.map((item) => (
-            <div key={item.id} className={styles.card}>
+          {list.map((item,index) => (
+            <div key={index} className={styles.card}>
               {/* 卡片顶部：图标+标题 与 日期 */}
               <div className={styles.questionnaireTop}>
                 <div className={styles.svgAndText}>
@@ -253,7 +252,9 @@ export default function Questionnaire({ choice, type = 'normal' }: Props) {
 
       {/* 二维码弹窗 */}
       <Modal
-        title="扫描二维码填写问卷"
+        title={
+    <div style={{ textAlign: 'center' }}>扫描二维码填写问卷</div>
+  }
         open={qrModalVisible}
         onCancel={() => setQrModalVisible(false)}
         footer={[
@@ -261,9 +262,9 @@ export default function Questionnaire({ choice, type = 'normal' }: Props) {
           <Button key="close" onClick={() => setQrModalVisible(false)}>关闭</Button>,
         ]}
       >
-        <div style={{ textAlign: 'center', padding: 20 }}>
+        <div style={{ textAlign: 'center', padding: 20,display: 'flex',flexDirection:'column', justifyContent: 'center',alignItems: 'center',   }}>
           {/* 需要安装 qrcode.react: pnpm add qrcode.react */}
-          {/* <QRCodeSVG value={`${window.location.origin}/fill/${currentQrId}`} size={200} /> */}
+          <QRCodeSVG value={`${window.location.origin}/fill/${currentQrId}`} size={200} />
           <p>问卷链接: {currentQrId ? `${typeof window !== 'undefined' ? window.location.origin : ''}/fill/${currentQrId}` : ''}</p>
         </div>
       </Modal>

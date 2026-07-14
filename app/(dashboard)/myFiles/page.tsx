@@ -6,10 +6,10 @@ import SvgIcon from '@/components/SvgIcon'
 import { request } from '@/lib/request'
 import styles from './page.module.css'
 import { reqDeleteFile, reqFileList, reqUploadFile } from '@/services/file/file'
-import {filesItemType} from '@/services/file/type'
+import {FileItem} from '@/services/file/type'
 
 export default function MyFilesPage() {
-  const [fileList, setFileList] = useState<filesItemType[]>([])
+  const [fileList, setFileList] = useState<FileItem[]>([])
   const [loading, setLoading] = useState(false)
   const [total, setTotal] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
@@ -20,9 +20,6 @@ export default function MyFilesPage() {
     setLoading(true)
     try {
       const data = await reqFileList(page, pageSize)
-   
-      // console.log(data);
-      
       setFileList(data.data.data || [])
       // console.log(data.data.totalData);
       

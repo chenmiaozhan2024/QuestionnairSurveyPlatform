@@ -29,6 +29,14 @@
     }
       .centerRight{
       display: flex;
+      .origin{
+        width: 169px;
+        height: 32px;
+        border-radius: 999px 999px 999px 999px;
+        border: 2px solid #328B99;
+        cursor: default;
+      }
+      
 
       .total{
         margin-left: 12px;
@@ -79,7 +87,7 @@
     }
   }
     .centerBottom{
-    padding: 24px;
+    /* padding: 24px; */
     width: 100%;
     height: calc(100vh - 130px);
     display: flex;
@@ -87,9 +95,9 @@
     .main{
       margin-right: 20px;
       flex: 1;
-      background: #FFFFFF;
+      /* background: #FFFFFF; */
       border-radius: 12px 12px 12px 12px;
-      padding: 28px;
+      /* padding: 28px; */
       display: flex;
       flex-direction: column;
       overflow: hidden;

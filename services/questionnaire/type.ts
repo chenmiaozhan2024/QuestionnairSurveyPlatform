@@ -2,13 +2,17 @@ export interface QuestionnaireItem {
   id: string
   title: string
   info: string
-  url: string
-  status: number // 0: 待收集  1: 已结束
   createTime: string
-  totalCollected: number
+  status: number
+  totalCollected: string
 }
-
-export interface QuestionnaireResult {
-  data: QuestionnaireItem[]
+interface QuestionnaireData {
   totalData: number
+  data: QuestionnaireItem[]
+  totalPage: number
+}
+export interface QuestionnaireResult {
+  code: number
+  msg: string
+  data: QuestionnaireData
 }

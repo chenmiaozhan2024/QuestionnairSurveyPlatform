@@ -25,24 +25,22 @@ export function getAllFinllIn({
     size,
     id,
   }
-  return request<GetAllFinllInResponse>(
+  return request.get<GetAllFinllInResponse>(
     `${statisticAPI.getFillIn}?page=${params.page}&size=${params.size}&id=${params.id}`,
   )
 }
-// 根据id获取答卷详情
+// 根据id获取答卷详情，用于统计页面使用
 export function getFinllInById(id: string) {
-  return request<getFinllInByIdResPon>(`${statisticAPI.getQuestionnair}/${id}`)
+  return request.get<getFinllInByIdResPon>(`${statisticAPI.getFillIn}/${id}`)
 }
+
 // 根据id删除答卷
 export function deleteQuestionnaireAnswer(id: string) {
-  return request<void>(`${statisticAPI.deleteQuestionnaireAnswer}?id=${id}`, {
-    method: 'DELETE',
-  })
+  return request.delete<void>(
+    `${statisticAPI.deleteQuestionnaireAnswer}?id=${id}`,
+  )
 }
 // 根据id编辑答卷
 export function editQuestionnaireAnswer(data: EditQuestionnaireData) {
-  return request<void>(`${statisticAPI.editQuestionnaireAnswer}`, {
-    method: 'POST',
-    body: data,
-  })
+  return request.post<void>(`${statisticAPI.editQuestionnaireAnswer}`)
 }
