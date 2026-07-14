@@ -15,6 +15,7 @@ export interface FillInAnswer {
 export interface FinllInItem {
   id: string
   answers: FillInAnswer[]
+  collectTime?: string
 }
 export interface FinllInData {
   data: FinllInItem[]

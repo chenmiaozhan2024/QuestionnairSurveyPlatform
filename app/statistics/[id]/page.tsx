@@ -11,7 +11,8 @@ import { formatDate } from '@/lib/utlisFuntion'
 import type {FileItem} from '@/services/file/type'
 import { message,} from 'antd'
 import MyTablePlus from '../_conponents/MyTablePlus/MyTablePlus'
-import type {FinllInItem } from '@/services/statistics/type'
+import type { FinllInItem } from '@/services/statistics/type'
+import { reqQuestions } from '@/services/statistics/statistics'
 export default function Page() {
   const { id } = useParams()
   const [total, setTotal] = useState<number>(0);
@@ -25,6 +26,7 @@ export default function Page() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [files, setFiles] = useState<string[]>([]); // 文件ID数组
   const [fileList, setFileList] = useState<FileItem[]>([]); // 所有文件列表（用于匹配文件信息）
+  const [answers,setAnswers]=useState<FinllInItem[]>([])
   // const [currentRecord, setCurrentRecord] = useState<TableRowData | null>(null);
   // 处理返回按钮点击
   const router = useRouter()
@@ -37,13 +39,21 @@ export default function Page() {
             size:size,
             id:id
         }
-        try {
+    try {
+      const res = await reqQuestions(params.id)
+      
+        setQuestions(res.data.questions)
+  
+      
           // 获取答卷
-          const res2 = await getFinllInById(params.id)
-          setTitle(res2.data.title)
-          setInfo(res2.data.info)
-          setCreateTime(formatDate(res2.data.createTime))
-            setQuestions(res2.data.questions || [])
+      const res2 = await getAllFinllIn({...params})
+      // console.log('答卷2222', res2);
+      setTotal(res2.data.totalData)
+      setAnswers(res2.data.data)
+          // setTitle(res2.data.title)
+          // setInfo(res2.data.info)
+          // setCreateTime(formatDate(res2.data.createTime))
+            // setQuestions(res2.data.questions || [])
             message.success('获取数据成功')
         }catch(err){
             console.error(err);
@@ -54,6 +64,12 @@ export default function Page() {
   useEffect(() => {
     getData(id as string, current, pageSize);
   }, [])
+
+  const handlePageChange = (page: number, size: number) => {
+    setCurrent(page)
+    setPageSize(size)
+    getData(id as string, page, size)
+  }
   return (
     <div className={styles.statisticsContainer}>
       <div className={styles.statisticTop}>
@@ -76,7 +92,7 @@ export default function Page() {
        <div className={styles.centerBottom}>
         <div className={styles.main}>
             <div className={styles.table}>
-              <MyTablePlus title={title} createTime={createTime}></MyTablePlus>
+              <MyTablePlus title={title} createTime={createTime} questions={questions} total={total} answers={answers} current={current} pageSize={pageSize} onPageChange={handlePageChange}></MyTablePlus>
             </div>
           </div>
           </div>

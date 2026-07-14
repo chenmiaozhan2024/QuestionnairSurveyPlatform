@@ -44,3 +44,9 @@ export function deleteQuestionnaireAnswer(id: string) {
 export function editQuestionnaireAnswer(data: EditQuestionnaireData) {
   return request.post<void>(`${statisticAPI.editQuestionnaireAnswer}`)
 }
+//根据问卷id获取问卷里的问题
+export function reqQuestions(id: string) {
+  return request.get<getFinllInByIdResPon>(
+    `${statisticAPI.getQuestionnair}/${id}`,
+  )
+}
