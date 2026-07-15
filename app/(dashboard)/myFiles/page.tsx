@@ -1,19 +1,27 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { Upload, Button, Spin, Pagination, message,Popconfirm } from 'antd'
+import { useEffect, useState, useRef, useCallback } from 'react'
+import { Upload, Button, Spin, Pagination, message, Popconfirm, Progress } from 'antd'
 import SvgIcon from '@/components/SvgIcon'
 import { request } from '@/lib/request'
 import styles from './page.module.css'
 import { reqDeleteFile, reqFileList, reqUploadFile } from '@/services/file/file'
-import {FileItem} from '@/services/file/type'
+import { ChunkUploader, type ChunkUploaderState } from '@/lib/chunkUpload'
+import type { FileItem } from '@/services/file/type'
 
 export default function MyFilesPage() {
   const [fileList, setFileList] = useState<FileItem[]>([])
   const [loading, setLoading] = useState(false)
   const [total, setTotal] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
+  const [uploadPercent, setUploadPercent] = useState<number | null>(null)
+  const [chunkState, setChunkState] = useState<ChunkUploaderState>('idle')
   const pageSize = 10
+
+  const uploaderRef = useRef<ChunkUploader | null>(null)
+
+  /** 超过此大小的文件走分片上传，默认 5MB */
+  const CHUNK_THRESHOLD = 5 * 1024 * 1024
 
   // 请求文件列表
   const fetchFileList = async (page = 1) => {
@@ -21,10 +29,7 @@ export default function MyFilesPage() {
     try {
       const data = await reqFileList(page, pageSize)
       setFileList(data.data.data || [])
-      // console.log(data.data.totalData);
-      
       setTotal(data.data.totalData || 0)
-       message.success('获取文件列表成功')
     } catch {
       message.error('获取文件列表失败')
     } finally {
@@ -36,26 +41,80 @@ export default function MyFilesPage() {
     fetchFileList(currentPage)
   }, [currentPage])
 
-  // 上传文件 API
-  const uploadFileAPI = async (file: File) => {
-  const formData = new FormData()
-  formData.append('files', file)
-  const res=await reqUploadFile(formData)
-  if (res.code !== 1) {
-    throw new Error(res.msg || '上传失败')
-  }
-}
+  // 页面加载时检查是否有未完成的断点续传
+  useEffect(() => {
+    const savedStates = ChunkUploader.getSavedStates()
+    if (savedStates.length > 0) {
+      const names = savedStates.map((s) => s.fileName).join('、')
+      message.info(`检测到未完成的上传：${names}，请重新选择相同文件以续传`, 5)
+    }
+  }, [])
+
+  // 上传文件 API（自动选择普通上传或分片上传）
+  const uploadFileAPI = useCallback(
+    async (file: File, onProgress?: (p: number) => void) => {
+      // 小文件走普通上传
+      if (file.size <= CHUNK_THRESHOLD) {
+        const formData = new FormData()
+        formData.append('files', file)
+        const res = await reqUploadFile(formData)
+        if (res.code !== 1) {
+          throw new Error(res.msg || '上传失败')
+        }
+        return
+      }
+
+      // 大文件走分片上传
+      const uploader = new ChunkUploader(file, {
+        onProgress: (p) => {
+          setUploadPercent(p)
+          onProgress?.(p)
+        },
+        onStateChange: (state) => setChunkState(state),
+      })
+      uploaderRef.current = uploader
+
+      try {
+        return await uploader.start()
+      } finally {
+        uploaderRef.current = null
+      }
+    },
+    [],
+  )
 
   const customRequest = async (options: any) => {
     const { file, onSuccess, onError } = options
     try {
-      await uploadFileAPI(file)
+      setUploadPercent(0)
+      setChunkState('idle')
+      await uploadFileAPI(file, (p) => setUploadPercent(p))
       onSuccess?.('上传成功', file)
       fetchFileList()
     } catch (error) {
       console.error('文件上传失败:', error)
       onError?.(error)
+    } finally {
+      // 只有在完成/取消/错误时才清除进度
+      if (chunkState !== 'uploading' && chunkState !== 'paused') {
+        setUploadPercent(null)
+        setChunkState('idle')
+      }
     }
+  }
+
+  const handlePause = () => {
+    uploaderRef.current?.pause()
+  }
+
+  const handleResume = () => {
+    uploaderRef.current?.resume()
+  }
+
+  const handleCancel = async () => {
+    setUploadPercent(null)
+    setChunkState('idle')
+    await uploaderRef.current?.cancel()
   }
 
   const uploadProps: any = {
@@ -81,32 +140,28 @@ export default function MyFilesPage() {
   }
 
   // 预览文件
- const handleFileSee = async (fileUUID: string) => {
-  try {
-    const res = await request.get<{ data: { url: string } }>(`/api/file/${fileUUID}`)
-    const url = res.data.url
-    if (url) {
-      window.open(url, '_blank')
-    } else {
-      message.error('文件地址不存在')
+  const handleFileSee = async (fileUUID: string) => {
+    try {
+      const res = await request.get<{ data: { url: string } }>(`/api/file/${fileUUID}`)
+      const url = res.data.url
+      if (url) {
+        window.open(url, '_blank')
+      } else {
+        message.error('文件地址不存在')
+      }
+    } catch {
+      message.error('预览失败')
     }
-  } catch {
-    message.error('预览失败')
   }
-}
 
   // 删除文件
   const handleDeleteFile = async (id: string) => {
     try {
-      // await request(`/api/file?id=${id}`, { method: 'DELETE' })
-      console.log('传给 reqDeleteFile 的 id:', id, typeof id);
       await reqDeleteFile(id)
       message.success('删除成功')
       fetchFileList(currentPage)
     } catch {
       message.error('删除失败')
-    } finally {
-       console.log(id)
     }
   }
 
@@ -124,6 +179,48 @@ export default function MyFilesPage() {
         </Upload>
         <div className={styles.right}></div>
       </div>
+
+      {/* 上传进度区域 */}
+      {uploadPercent !== null && (
+        <div style={{ width: '450px', margin: '12px 0' }}>
+          {/* 哈希计算中 */}
+          {chunkState === 'hashing' && (
+            <div style={{ marginBottom: 8, color: '#328B99', fontSize: 14 }}>
+              正在计算文件指纹...
+            </div>
+          )}
+
+          {/* 上传进度条 */}
+          <Progress
+            percent={uploadPercent}
+            status={chunkState === 'error' ? 'exception' : 'active'}
+          />
+
+          {/* 操作按钮 */}
+          {(chunkState === 'uploading' || chunkState === 'paused') && (
+            <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
+              {chunkState === 'uploading' ? (
+                <Button size="small" onClick={handlePause}>
+                  暂停
+                </Button>
+              ) : (
+                <Button size="small" onClick={handleResume}>
+                  继续
+                </Button>
+              )}
+              <Button size="small" danger onClick={handleCancel}>
+                取消
+              </Button>
+            </div>
+          )}
+
+          {chunkState === 'merging' && (
+            <div style={{ marginTop: 4, color: '#328B99', fontSize: 13 }}>
+              正在合并文件...
+            </div>
+          )}
+        </div>
+      )}
 
       <Spin spinning={loading} description="加载中...">
         <div className={styles.bottom}>
@@ -154,7 +251,6 @@ export default function MyFilesPage() {
                         <SvgIcon name="bin" width="30" height="30" />
                       </span>
                     </Popconfirm>
-                   
                   </div>
                 </div>
               </li>
